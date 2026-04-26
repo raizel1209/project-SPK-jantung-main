@@ -1,280 +1,111 @@
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Sphere, Cylinder, Torus, Box, Cone, Ring, Octahedron, Icosahedron, MeshDistortMaterial } from '@react-three/drei';
-import * as THREE from 'three';
-import { useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { User, Activity, Droplets, HeartPulse, Brain, Stethoscope, AlertTriangle, ShieldCheck } from 'lucide-react';
 
-function Step0Usia({ ageValue }) {
-  const groupRef = useRef();
-  
-  useFrame((state) => {
-    groupRef.current.rotation.y += 0.01;
-    groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime) * 0.1;
-  });
+// Animasi Gelombang EKG 2D
+const ECGWave = () => (
+  <svg viewBox="0 0 200 100" className="w-full h-32 stroke-emerald-400 stroke-[3px] fill-none drop-shadow-[0_0_10px_rgba(52,211,153,0.8)]">
+    <motion.path
+      d="M 0,50 L 40,50 L 50,20 L 60,90 L 75,10 L 85,60 L 95,50 L 200,50"
+      initial={{ pathLength: 0, opacity: 0.5 }}
+      animate={{ pathLength: 1, opacity: 1 }}
+      transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+    />
+  </svg>
+);
 
-  const ageColor = ageValue < 30 ? '#3b82f6' : ageValue < 60 ? '#10b981' : '#f59e0b';
+// Animasi Lingkaran Ripple 2D
+const RippleEffect = ({ color }) => (
+  <div className="absolute inset-0 flex items-center justify-center">
+    {[...Array(3)].map((_, i) => (
+      <motion.div
+        key={i}
+        className="absolute rounded-full border-2"
+        style={{ borderColor: color, width: '100px', height: '100px' }}
+        initial={{ scale: 0.8, opacity: 1 }}
+        animate={{ scale: 2.5, opacity: 0 }}
+        transition={{ duration: 2, repeat: Infinity, delay: i * 0.6, ease: "easeOut" }}
+      />
+    ))}
+  </div>
+);
 
-  return (
-    <group ref={groupRef} position={[0, 0, 0]} scale={1.2}>
-      {/* Kepala (Head) */}
-      <Sphere args={[0.35, 16, 16]} position={[0, 1.4, 0]}>
-        <meshStandardMaterial color={ageColor} emissive={ageColor} emissiveIntensity={0.4} metalness={0.3} roughness={0.2} />
-      </Sphere>
-      {/* Tubuh (Body) */}
-      <Cylinder args={[0.25, 0.35, 1.1, 16]} position={[0, 0.6, 0]}>
-        <meshStandardMaterial color="#4b5563" emissive="#059669" emissiveIntensity={0.2} />
-      </Cylinder>
-      {/* Kaki kiri */}
-      <Cylinder args={[0.12, 0.15, 0.6, 12]} position={[-0.12, -0.3, 0.3]}>
-        <meshStandardMaterial color="#374151" />
-      </Cylinder>
-      {/* Kaki kanan */}
-      <Cylinder args={[0.12, 0.15, 0.6, 12]} position={[0.12, -0.3, 0.3]}>
-        <meshStandardMaterial color="#374151" />
-      </Cylinder>
-      {/* Age halo */}
-      <Torus args={[1.4, 0.05, 8, 16]} position={[0, 1.6, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <meshStandardMaterial color={ageColor} emissive={ageColor} emissiveIntensity={0.3} />
-      </Torus>
-    </group>
-  );
-}
-
-function Step1JenisKelamin({ sexValue }) {
-  const groupRef = useRef();
-  
-  useFrame(() => {
-    if (groupRef.current) groupRef.current.rotation.y += 0.015;
-  });
-
-  const color = sexValue === '1' ? '#3b82f6' : '#ec4899';
-
-  return (
-    <group ref={groupRef}>
-      {/* Basis */}
-      <Sphere args={[1, 24, 24]}>
-        <MeshDistortMaterial color={color} speed={1.2} distort={0.2} emissive={color} emissiveIntensity={0.3} />
-      </Sphere>
-      {/* Simbol laki-laki */}
-      {sexValue === '1' ? (
-        <group position={[0, 0.2, 0.8]}>
-          <Cylinder args={[0.08, 0.1, 1, 12]} />
-          <Cone args={[0.15, 0.4, 12]} position={[0, 0.7, 0]} />
-        </group>
-      ) : (
-        <group position={[0, 0.8, 0.3]}>
-          <Sphere args={[0.2, 12, 12]} />
-          <Cylinder args={[0.22, 0.25, 0.6, 12]} position={[0, -0.3, 0]} />
-        </group>
-      )}
-    </group>
-  );
-}
-
-function Step2TekananDarah() {
-  const waveRef = useRef();
-
-  useFrame((state) => {
-    if (waveRef.current) {
-      waveRef.current.scale.setScalar(Math.sin(state.clock.elapsedTime * 6) * 0.4 + 0.8);
-    }
-  });
-
-  return (
-    <group rotation={[0, 0.4, 0]}>
-      {/* Pembuluh darah */}
-      <Cylinder args={[0.12, 0.22, 4, 20]} position={[0, 0, 0]}>
-        <meshStandardMaterial color="#ef4444" emissive="#dc2626" emissiveIntensity={0.5} />
-      </Cylinder>
-      {/* Pompa */}
-      <Sphere args={[0.45, 16, 16]} position={[0, -1.2, 0]}>
-        <MeshDistortMaterial color="#b91c1c" speed={2.5} distort={0.3} />
-      </Sphere>
-      {/* Gelombang tekanan */}
-      <Ring ref={waveRef} args={[1, 1.2, 24]} position={[0, 0.8, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <meshStandardMaterial color="#ef4444" emissive="#ef4444" emissiveIntensity={0.4} transparent opacity={0.7} />
-      </Ring>
-    </group>
-  );
-}
-
-function Step3Kolesterol() {
-  const plaqueRef = useRef();
-
-  useFrame(() => {
-    if (plaqueRef.current) {
-      plaqueRef.current.rotation.z += 0.02;
-    }
-  });
-
-  return (
-    <group rotation={[0.1, 0.6, 0]}>
-      {/* Arteri tersumbat */}
-      <Cylinder args={[0.35, 0.55, 3, 20]} position={[0, 0, 0]}>
-        <meshStandardMaterial color="#f97316" emissive="#ea580c" emissiveIntensity={0.3} />
-      </Cylinder>
-      {/* Plak kolesterol */}
-      <group ref={plaqueRef} position={[0, 0.3, 0]}>
-        <Box args={[0.9, 0.25, 0.6]}>
-          <MeshDistortMaterial color="#d97706" speed={0.8} distort={0.4} />
-        </Box>
-        <Box args={[0.7, 0.15, 0.4]} position={[0, -0.2, 0.1]}>
-          <meshStandardMaterial color="#b45309" emissive="#92400e" emissiveIntensity={0.2} />
-        </Box>
-      </group>
-    </group>
-  );
-}
-
-function Step4GulaDarah() {
-  const dripRef = useRef();
-
-  useFrame((state) => {
-    if (dripRef.current) {
-      dripRef.current.position.y = Math.sin(state.clock.elapsedTime * 3) * 0.1 - 0.8;
-    }
-  });
-
-  return (
-    <group rotation={[0, 0.3, 0]}>
-      {/* Tetesan darah */}
-      <Cone args={[0.55, 1.3, 20]} position={[0, 0, 0]}>
-        <meshStandardMaterial color="#8b5cf6" emissive="#7c3aed" emissiveIntensity={0.4} metalness={0.2} />
-      </Cone>
-      {/* Efek menetes */}
-      <Cylinder ref={dripRef} args={[0.08, 0.12, 0.9, 12]} position={[0, -1.1, 0]}>
-        <meshStandardMaterial color="#a78bfa" transparent opacity={0.9} />
-      </Cylinder>
-    </group>
-  );
-}
-
-function Step5EKG() {
-  return (
-    <group rotation={[0, 0.5, 0]}>
-      {/* Jantung */}
-      <Sphere args={[0.75, 24, 24]} position={[0, 0, 0]}>
-        <meshStandardMaterial color="#0ea5e9" emissive="#0284c7" emissiveIntensity={0.5} />
-      </Sphere>
-      {/* Elektroda EKG */}
-      <Cylinder args={[0.03, 0.06, 1.8, 12]} position={[0.7, 0.4, 0.4]}>
-        <meshStandardMaterial color="#0369a1" emissive="#0369a1" emissiveIntensity={0.3} />
-      </Cylinder>
-      <Cylinder args={[0.03, 0.06, 1.8, 12]} position={[-0.7, 0.4, 0.4]}>
-        <meshStandardMaterial color="#0369a1" emissive="#0369a1" emissiveIntensity={0.3} />
-      </Cylinder>
-      <Cylinder args={[0.03, 0.06, 1.6, 12]} position={[0, 0.8, 0]}>
-        <meshStandardMaterial color="#0369a1" emissive="#0369a1" emissiveIntensity={0.3} />
-      </Cylinder>
-    </group>
-  );
-}
-
-function Step6DetakJantung() {
-  const heartRef = useRef();
-
-  useFrame((state) => {
-    if (heartRef.current) {
-      heartRef.current.rotation.y += 0.02;
-      heartRef.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 4) * 0.1);
-    }
-  });
-
-  return (
-    <group ref={heartRef} rotation={[0, 0.7, 0]}>
-      {/* Jantung berdenyut */}
-      <Icosahedron args={[1, 1.5]}>
-        <MeshDistortMaterial color="#dc2626" speed={3.5} distort={0.5} emissive="#b91c1c" emissiveIntensity={0.6} />
-      </Icosahedron>
-      {/* Gelombang denyut */}
-      <Ring args={[1.3, 1.4, 24]} rotation={[-Math.PI / 2, 0, 0]}>
-        <meshStandardMaterial color="#ef4444" emissive="#ef4444" emissiveIntensity={0.6} transparent opacity={0.8} />
-      </Ring>
-    </group>
-  );
-}
-
-function ResultPrediksi({ result }) {
-const riskColor = result?.risk === 'Low' ? '#059669' : '#dc2626';
-  const auraRef = useRef();
-
-  useFrame((state) => {
-    if (auraRef.current) {
-      auraRef.current.rotation.x += 0.01;
-      auraRef.current.rotation.y += 0.01;
-      auraRef.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 2) * 0.15);
-    }
-  });
-
-  return (
-    <group scale={1.3}>
-      {/* Jantung hasil */}
-      <Sphere args={[0.9, 24, 24]} position={[0, 0.1, 0]}>
-        <MeshDistortMaterial color={riskColor} speed={4} distort={0.6} emissive={riskColor} emissiveIntensity={0.7} />
-      </Sphere>
-      {/* Bagian bawah jantung */}
-      <Cone args={[0.45, 0.9, 18]} position={[0, -0.7, 0]}>
-        <meshStandardMaterial color={riskColor} emissive={riskColor} emissiveIntensity={0.5} />
-      </Cone>
-      {/* Aura perlindungan */}
-      <group ref={auraRef}>
-        <Octahedron args={[1.6, 0]} wireframe>
-          <meshStandardMaterial color={riskColor} emissive={riskColor} emissiveIntensity={0.4} wireframe />
-        </Octahedron>
-        <Icosahedron args={[2, 0.1]} wireframe position={[0, 0, 0]}>
-          <meshStandardMaterial color={riskColor} emissive={riskColor} emissiveIntensity={0.2} wireframe />
-        </Icosahedron>
-      </group>
-    </group>
-  );
-}
-
+// Komponen Pengganti Visualisasi
 export default function Medical3D({ step, values, result }) {
   const stepId = step?.id || (result ? 7 : 0);
+  const isHighRisk = result?.risk === 'High';
+  const resultColor = isHighRisk ? '#ef4444' : '#10b981';
 
-  const getScene = () => {
-    switch (stepId) {
-      case 0: return <Step0Usia ageValue={parseInt(values?.age) || 0} />;
-      case 1: return <Step1JenisKelamin sexValue={values?.sex} />;
-      case 2: return <Step2TekananDarah />;
-      case 3: return <Step3Kolesterol />;
-      case 4: return <Step4GulaDarah />;
-      case 5: return <Step5EKG />;
-      case 6: return <Step6DetakJantung />;
-      case 7: return <ResultPrediksi result={result} />;
-      default: return <Sphere args={[1, 32, 32]}><MeshDistortMaterial color="#10b981" /></Sphere>;
-    }
-  };
+  const scenes = [
+    // Step 0: Usia
+    <motion.div key="step0" className="relative flex flex-col items-center justify-center h-full w-full" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+      <RippleEffect color="#3b82f6" />
+      <User className="w-32 h-32 text-blue-400 drop-shadow-[0_0_15px_rgba(59,130,246,0.6)] relative z-10" />
+    </motion.div>,
+
+    // Step 1: Jenis Kelamin
+    <motion.div key="step1" className="relative flex items-center justify-center h-full w-full gap-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <motion.div animate={{ scale: values?.sex === '1' ? 1.3 : 0.8, opacity: values?.sex === '1' ? 1 : 0.3 }} className="text-blue-400">
+        <Activity className="w-24 h-24 drop-shadow-[0_0_15px_rgba(59,130,246,0.8)]" />
+      </motion.div>
+      <motion.div animate={{ scale: values?.sex === '0' ? 1.3 : 0.8, opacity: values?.sex === '0' ? 1 : 0.3 }} className="text-pink-400">
+        <User className="w-24 h-24 drop-shadow-[0_0_15px_rgba(236,72,153,0.8)]" />
+      </motion.div>
+    </motion.div>,
+
+    // Step 2: Tekanan Darah
+    <motion.div key="step2" className="relative flex items-center justify-center h-full w-full" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
+      <RippleEffect color="#ef4444" />
+      <Droplets className="w-32 h-32 text-red-400 drop-shadow-[0_0_20px_rgba(239,68,68,0.8)] relative z-10" />
+    </motion.div>,
+
+    // Step 3: Kolesterol
+    <motion.div key="step3" className="relative flex items-center justify-center h-full w-full" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
+      <div className="w-48 h-48 rounded-full border-8 border-orange-500/30 flex items-center justify-center relative overflow-hidden">
+        <motion.div className="absolute bottom-0 w-full bg-orange-400/50" animate={{ height: ['40%', '60%', '40%'] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
+        <Activity className="w-20 h-20 text-orange-300 relative z-10 drop-shadow-md" />
+      </div>
+    </motion.div>,
+
+    // Step 4: Gula Darah
+    <motion.div key="step4" className="relative flex items-center justify-center h-full w-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <RippleEffect color="#a855f7" />
+      <Brain className="w-32 h-32 text-purple-400 drop-shadow-[0_0_20px_rgba(168,85,247,0.8)] relative z-10" />
+    </motion.div>,
+
+    // Step 5: EKG
+    <motion.div key="step5" className="relative flex items-center justify-center h-full w-full px-8" initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
+      <ECGWave />
+    </motion.div>,
+
+    // Step 6: Detak Jantung
+    <motion.div key="step6" className="relative flex items-center justify-center h-full w-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <RippleEffect color="#ef4444" />
+      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 0.8, repeat: Infinity }}>
+        <HeartPulse className="w-40 h-40 text-red-500 drop-shadow-[0_0_25px_rgba(239,68,68,0.9)] relative z-10" />
+      </motion.div>
+    </motion.div>,
+
+    // Step 7: Hasil Prediksi
+    <motion.div key="step7" className="relative flex flex-col items-center justify-center h-full w-full" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+      <RippleEffect color={resultColor} />
+      <motion.div animate={isHighRisk ? { x: [-5, 5, -5] } : { y: [-10, 10, -10] }} transition={{ duration: isHighRisk ? 0.2 : 3, repeat: Infinity }}>
+        {isHighRisk ? (
+          <AlertTriangle className="w-40 h-40 text-red-500 drop-shadow-[0_0_30px_rgba(239,68,68,0.9)] relative z-10" />
+        ) : (
+          <ShieldCheck className="w-40 h-40 text-emerald-400 drop-shadow-[0_0_30px_rgba(16,185,129,0.9)] relative z-10" />
+        )}
+      </motion.div>
+    </motion.div>
+  ];
 
   return (
-    <div className="h-[500px] lg:h-[600px] w-full bg-gradient-to-br from-slate-900/70 via-black/50 to-slate-900/70 rounded-3xl overflow-hidden border-4 border-gradient-medical shadow-[0_0_100px_rgba(16,185,129,0.4)] backdrop-blur-xl">
-      <Canvas 
-        camera={{ position: [3, 2, 4], fov: 55 }} 
-        gl={{ 
-          antialias: true, 
-          toneMapping: THREE.ACESFilmicToneMapping,
-          outputColorSpace: THREE.SRGBColorSpace
-        }}
-        className="w-full h-full cursor-grab active:cursor-grabbing"
-      >
-        <ambientLight intensity={0.45} />
-        <directionalLight position={[4, 4, 3]} intensity={1.5} castShadow />
-        <pointLight position={[-1.5, 1.5, 1.5]} color="#00ff88" intensity={1} />
-        <pointLight position={[1.5, 1, -1]} color="#8888ff" intensity={0.6} />
-        <hemisphereLight intensity={0.35} color="#22c55e" groundColor="#000011" />
-        
-        {getScene()}
-        
-        <OrbitControls 
-          enablePan={false} 
-          enableZoom={true} 
-          minDistance={2.5} 
-          maxDistance={7}
-          autoRotate 
-          autoRotateSpeed={0.6}
-          dampingFactor={0.05}
-          rotateSpeed={0.8}
-        />
-      </Canvas>
+    <div className="h-[500px] lg:h-[600px] w-full relative bg-slate-900/40 rounded-3xl overflow-hidden border border-emerald-500/20 shadow-[0_0_40px_rgba(16,185,129,0.1)] backdrop-blur-xl flex items-center justify-center">
+      {/* Grid Background Halus */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.05)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
+      
+      <AnimatePresence mode="wait">
+        {scenes[stepId]}
+      </AnimatePresence>
     </div>
   );
 }

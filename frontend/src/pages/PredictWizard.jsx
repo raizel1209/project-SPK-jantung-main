@@ -4,6 +4,7 @@ import { HeartPulse, AlertCircle, Zap, User, Activity, Droplets, Brain, Stethosc
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import ResultAnimation from '../components/ResultAnimation.jsx';
+import Medical3D from '../components/Medical3D.jsx';
 
 const STEPS = [
   { 
@@ -118,6 +119,7 @@ function PredictWizard() {
   const watchedAge = useWatch({ control, name: 'age' });
   const watchedSex = useWatch({ control, name: 'sex' });
   const watchedField = useWatch({ control, name: STEPS[currentStep]?.field });
+  const formValues = watch();
 
   const step = STEPS[currentStep];
 
@@ -167,295 +169,222 @@ function PredictWizard() {
   }, [result]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 relative overflow-hidden">
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        {/* Header */}
+    <div className="min-h-screen relative overflow-x-hidden font-sans text-slate-200 bg-slate-950/80">
+      {/* Subtle Futuristic Medical Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
+      
+      {result && <ResultAnimation result={result} />}
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 flex flex-col lg:flex-row gap-10 lg:gap-16 relative z-10 lg:items-start">
+        
+        {/* Left Column: 3D Hologram Area */}
         <motion.div 
-          initial={{ opacity: 0, y: -50 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          className="text-center mb-16"
+          className="w-full lg:w-5/12 sticky top-10"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <div className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-500/30 to-teal-500/30 backdrop-blur-xl rounded-2xl border border-emerald-500/50 shadow-xl mb-8">
-            <Zap className="w-8 h-8 text-emerald-400 animate-pulse" />
-            <span className="text-emerald-300 font-mono text-lg uppercase tracking-wider font-bold">
-              {result ? '✅ Hasil 3D' : `Step ${currentStep + 1} dari 7`}
-            </span>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-black bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 bg-clip-text text-transparent drop-shadow-2xl">
-            {result ? 'Prediksi AI' : step.title}
-          </h1>
-        </motion.div>
-
-        {/* Progress Bar */}
-        <motion.div 
-          className="glass-card mb-12 p-6 rounded-2xl shadow-xl"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
-          <div className="flex items-center justify-between mb-6">
-            {STEPS.map((s, index) => (
-              <motion.div
-                key={s.id}
-                className={`flex flex-col items-center cursor-pointer p-3 rounded-xl transition-all ${index === currentStep ? 'bg-emerald-500/50 ring-4 ring-emerald-400/60 shadow-lg shadow-emerald-glow scale-105' : index < currentStep ? 'bg-emerald-400/40 text-emerald-300' : 'text-slate-500 hover:text-emerald-300 hover:bg-emerald-500/20 hover:scale-105'}`}
-                onClick={() => setCurrentStep(index)}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <motion.div
-                  animate={{ scale: index === currentStep ? 1.3 : 1 }}
-                  className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-xl border-2 mb-1 ${index === currentStep ? 'bg-emerald-500 border-emerald-400 shadow-emerald-glow' : index < currentStep ? 'bg-emerald-400 border-emerald-400/70' : 'bg-slate-800/70 border-slate-600/60 hover:border-emerald-400'}`}
-                >
-                  <s.icon className={`w-6 h-6 ${index === currentStep ? 'text-white' : index < currentStep ? 'text-emerald-200' : 'text-slate-400 hover:text-emerald-300'}`} />
-                </motion.div>
-                <span className="text-xs font-mono uppercase tracking-wide font-bold">{s.id + 1}</span>
-              </motion.div>
-            ))}
-          </div>
-          <div className="w-full h-2 bg-slate-900/70 rounded-xl border border-slate-700/50">
+          <div className="relative group rounded-3xl p-1 bg-gradient-to-b from-emerald-500/20 to-transparent">
             <motion.div 
-              className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 shadow-md rounded-xl"
-              initial={{ width: 0 }}
-              animate={{ width: `${((currentStep + 1) / 7) * 100}%` }}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
+              className="absolute inset-x-0 h-[2px] bg-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.8)] z-20 pointer-events-none"
+              animate={{ top: ['0%', '100%', '0%'] }}
+              transition={{ duration: 5, ease: "linear", repeat: Infinity }}
             />
-          </div>
-        </motion.div>
-
-        {/* Step Guide */}
-        <motion.div 
-          className="glass-card p-6 md:p-8 rounded-2xl border-emerald-500/30 shadow-2xl mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-emerald-500/40 rounded-xl flex items-center justify-center border-2 border-emerald-400/70 flex-shrink-0 mt-1">
-              <Info className="w-7 h-7 text-emerald-400" />
+            <Medical3D step={STEPS[currentStep]} values={formValues} result={result} />
+            <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded border border-emerald-500/30 font-mono text-[10px] text-emerald-300 tracking-widest uppercase">
+              {result ? 'DIAGNOSTIC COMPLETE' : `BIO-SCAN: STAGE_0${currentStep + 1}`}
             </div>
-            <div>
-              <h3 className="text-2xl md:text-3xl font-black text-emerald-300 mb-3">{step.title}</h3>
-              <p className="text-base md:text-lg font-semibold text-slate-200 leading-relaxed">{step.description}</p>
-              {step.min && (
-                <div className="mt-4 p-4 bg-slate-900/70 border border-slate-700/60 rounded-xl">
-                  <span className="text-emerald-400 font-mono text-xs uppercase tracking-wide font-bold block mb-1">Rentang:</span>
-                  <span className="text-xl md:text-2xl font-bold text-slate-100">{step.min.value} - {step.max.value} {step.unit}</span>
-                </div>
-              )}
+            <div className="absolute bottom-4 right-4 flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></div>
+              <span className="font-mono text-[10px] text-emerald-500 tracking-[0.3em]">LIVE</span>
             </div>
           </div>
         </motion.div>
 
-        {/* Content */}
-        {!result ? (
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentStep}
-              initial={{ opacity: 0, scale: 0.95, y: 30 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -30 }}
-              transition={{ duration: 0.4 }}
-              className="glass-card p-12 rounded-2xl shadow-3xl border-emerald-500/30"
-            >
-              {/* Icon */}
-              <motion.div 
-                className="text-center mb-14"
-                animate={{
-                  scale: [1, 1.08, 1],
-                  rotate: [0, 4, -4, 0]
-                }}
-                transition={{ repeat: Infinity, duration: 4 }}
+        {/* Right Column: Interaction Console */}
+        <div className="w-full lg:w-7/12 flex flex-col justify-center min-h-[600px]">
+          {/* Header */}
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            className="mb-8 text-center lg:text-left"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-950/30 backdrop-blur-md rounded-full border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)] mb-4">
+              <Activity className="w-4 h-4 text-emerald-400 animate-pulse" />
+              <span className="text-emerald-300 font-mono text-xs uppercase tracking-[0.15em] font-semibold">
+                {result ? 'AI Analysis Complete' : `Bio-Scan Proses: ${currentStep + 1}/7`}
+              </span>
+            </div>
+            <h1 className="text-4xl lg:text-5xl font-black bg-gradient-to-br from-white via-emerald-100 to-emerald-500 bg-clip-text text-transparent drop-shadow-lg tracking-tight">
+              {result ? 'Laporan Visual 2D' : step.title}
+            </h1>
+            {!result && (
+              <p className="mt-4 text-slate-400 text-lg">{step.description}</p>
+            )}
+          </motion.div>
+
+          {!result ? (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentStep}
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.4 }}
+                className="flex-1"
               >
-                <motion.div 
-                  className={`w-32 h-32 mx-auto rounded-2xl flex items-center justify-center shadow-2xl border-4 shadow-[0_0_40px_rgba(16,185,129,0.4)] ${
-                    currentStep === 0 && getAgeCategory(watchedAge) === 'teen' ? 'bg-gradient-to-r from-blue-500/50 border-blue-400' :
-                    currentStep === 0 && getAgeCategory(watchedAge) === 'adult' ? 'bg-gradient-to-r from-emerald-500/50 border-emerald-400' :
-                    currentStep === 0 && getAgeCategory(watchedAge) === 'elderly' ? 'bg-gradient-to-r from-orange-500/50 border-orange-400' :
-                    currentStep === 1 && watchedSex === '1' ? 'bg-gradient-to-r from-blue-500/50 border-blue-400' :
-                    currentStep === 1 && watchedSex === '0' ? 'bg-gradient-to-r from-pink-500/50 border-pink-400' :
-                    'bg-gradient-to-r from-emerald-500/40 to-teal-500/40 border-emerald-400'
-                  }`}
-                >
-                  {currentStep === 0 ? (
-                    <User className={`w-18 h-18 animate-bounce ${
-                      getAgeCategory(watchedAge) === 'teen' ? 'text-blue-200' :
-                      getAgeCategory(watchedAge) === 'adult' ? 'text-emerald-200' :
-                      'text-orange-200'
-                    }`} />
-                  ) : currentStep === 1 ? (
-                    watchedSex === '1' ? <Activity className="w-18 h-18 text-blue-200 animate-pulse" /> : 
-                    watchedSex === '0' ? <User className="w-18 h-18 text-pink-200 animate-pulse" /> :
-                    <step.icon className="w-18 h-18 text-emerald-200" />
-                  ) : (
-                    <step.icon className="w-18 h-18 text-emerald-200 animate-pulse" />
-                  )}
-                </motion.div>
-              </motion.div>
+                {/* Futuristic Progress Tracker */}
+                <div className="flex gap-2 mb-10">
+                  {STEPS.map((s, index) => (
+                    <div key={s.id} className="flex-1">
+                      <div className={`h-1.5 rounded-full transition-all duration-500 ${index === currentStep ? 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]' : index < currentStep ? 'bg-emerald-800' : 'bg-slate-800'}`} />
+                    </div>
+                  ))}
+                </div>
 
-              {/* Input */}
-              {step.type === 'number' && (
-                <div className="text-center mb-16">
-                  <motion.input 
-                    {...register(step.field, { 
-                      required: `${step.title} wajib diisi`, 
-                      min: step.min, 
-                      max: step.max,
-                      valueAsNumber: true
-                    })} 
-                    type="number" 
-                    placeholder={step.placeholder}
-                    className={`w-full max-w-lg mx-auto block px-12 py-12 text-2xl md:text-3xl font-mono font-bold text-white text-center rounded-2xl transition-all duration-500 shadow-3xl border-4 ${
-                      errors[step.field] 
-                        ? 'border-red-500/80 bg-red-500/20 ring-8 ring-red-500/40 shadow-red-glow-xl hover:shadow-red-glow-2xl' 
-                        : 'border-emerald-400/70 bg-white/10 ring-8 ring-emerald-500/30 shadow-emerald-glow-xl hover:shadow-emerald-glow-2xl hover:border-emerald-500/90 hover:bg-white/20'
-                    }`}
-                  />
+                {/* Input Area */}
+                <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8 lg:p-10 shadow-2xl relative overflow-hidden">
+                  <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+                  <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+                  
+                  {step.type === 'number' && (
+                    <div className="relative max-w-sm mx-auto z-10">
+                      <motion.input 
+                        {...register(step.field, { 
+                          required: `${step.title} wajib diisi`, 
+                          min: step.min, 
+                          max: step.max,
+                          valueAsNumber: true
+                        })} 
+                        type="number" 
+                        placeholder={step.placeholder}
+                        className={`w-full bg-slate-950/80 border-2 rounded-2xl px-6 py-8 text-4xl font-mono font-bold text-center text-white outline-none transition-all duration-300 ${
+                          errors[step.field] 
+                            ? 'border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.2)] focus:border-red-400' 
+                            : 'border-emerald-500/30 focus:border-emerald-400 focus:shadow-[0_0_30px_rgba(16,185,129,0.2)]'
+                        }`}
+                      />
+                      <div className="absolute right-6 top-1/2 -translate-y-1/2 text-emerald-500/50 font-mono font-bold">{step.unit}</div>
+                    </div>
+                  )}
+
+                  {step.type === 'radio' && (
+                    <div className={`grid ${step.options.length === 2 ? 'grid-cols-2' : 'grid-cols-1 md:grid-cols-3'} gap-4 relative z-10`}>
+                      {step.options.map((option) => {
+                        const isSelected = watch(step.field) === option.value;
+                        return (
+                          <label key={option.value} className="cursor-pointer group">
+                            <input 
+                              type="radio" 
+                              value={option.value} 
+                              {...register(step.field, { required: `${step.title} wajib dipilih` })} 
+                              className="sr-only"
+                            />
+                            <motion.div 
+                              className={`h-full p-6 rounded-2xl border-2 flex flex-col items-center justify-center text-center transition-all ${
+                                isSelected 
+                                  ? 'bg-emerald-500/10 border-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.2)]' 
+                                  : 'bg-slate-950/50 border-slate-700/50 group-hover:border-emerald-500/50'
+                              }`}
+                              whileTap={{ scale: 0.95 }}
+                            >
+                              <option.icon className={`w-10 h-10 mb-3 ${isSelected ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]' : 'text-slate-500 group-hover:text-emerald-300'}`} />
+                              <span className={`font-bold ${isSelected ? 'text-white' : 'text-slate-300'}`}>{option.label}</span>
+                            </motion.div>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  )}
+
                   {errors[step.field] && (
-                    <motion.div className="mt-8 p-8 bg-red-500/30 border-4 border-red-400/70 rounded-2xl shadow-2xl shadow-red-glow-xl flex items-center gap-4 max-w-2xl mx-auto">
-                      <AlertCircle className="w-12 h-12 text-red-300" />
-                      <span className="text-xl font-bold text-red-100">{errors[step.field].message}</span>
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-6 relative z-10 flex items-center justify-center gap-2 text-red-400 bg-red-950/30 py-3 px-4 rounded-xl border border-red-500/20">
+                      <AlertCircle className="w-5 h-5" />
+                      <span className="font-semibold text-sm">{errors[step.field].message}</span>
                     </motion.div>
                   )}
                 </div>
-              )}
 
-              {step.type === 'radio' && (
-                <div className={`grid ${step.options.length === 2 ? 'md:grid-cols-2' : 'lg:grid-cols-3 md:grid-cols-2'} gap-6 max-w-4xl mx-auto`}>
-                  {step.options.map((option) => {
-                    const isSelected = watch(step.field) === option.value;
-                    return (
-                      <motion.label 
-                        key={option.value}
-                        className={`group cursor-pointer p-8 rounded-2xl border-4 backdrop-blur-xl shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-400 ${
-                          isSelected 
-                            ? 'border-emerald-500/90 scale-105 ring-4 ring-emerald-500/60 bg-emerald-500/30 shadow-emerald-glow-xl hover:shadow-emerald-glow-2xl hover:scale-[1.08]' 
-                            : 'border-white/30 hover:border-emerald-500/70 hover:bg-emerald-500/20'
-                        }`}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <input 
-                          type="radio" 
-                          value={option.value} 
-                          {...register(step.field, { required: `${step.title} wajib dipilih` })} 
-                          className="sr-only peer"
-                        />
-                        <option.icon className={`w-16 h-16 mx-auto mb-4 text-emerald-400 group-hover:text-emerald-300 animate-pulse ${isSelected ? 'animate-bounce scale-110 shadow-emerald-glow-lg' : ''}`} />
-                        <h3 className="text-xl md:text-2xl font-bold text-white text-center mb-2 line-clamp-1 drop-shadow-lg">{option.label}</h3>
-                        <p className="text-sm md:text-base text-slate-200 text-center font-mono line-clamp-2">{option.desc}</p>
-                        <div className="mt-6 w-full h-2 bg-white/20 rounded-xl">
-                          <motion.div 
-                            className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-xl shadow-md"
-                            initial={{ width: 0 }}
-                            animate={{ width: isSelected ? '100%' : '0%' }}
-                            transition={{ duration: 0.4 }}
-                          />
-                        </div>
-                      </motion.label>
-                    );
-                  })}
+                {/* Navigation Controls */}
+                <div className="flex items-center gap-4 mt-8">
+                  <button 
+                    type="button"
+                    onClick={prevStep}
+                    disabled={currentStep === 0}
+                    className="px-6 py-4 rounded-xl font-bold bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all border border-slate-600/50"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={currentStep === 6 ? handleSubmit(onSubmit) : nextStep}
+                    disabled={!isStepValid || loading}
+                    className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl font-bold uppercase tracking-widest transition-all bg-emerald-500 text-slate-950 hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(52,211,153,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? (
+                      <div className="w-6 h-6 border-3 border-slate-900/30 border-t-slate-950 rounded-full animate-spin" />
+                    ) : currentStep === 6 ? (
+                      <>Proses Analisis <Brain className="w-5 h-5" /></>
+                    ) : (
+                      <>Lanjut <ChevronRight className="w-5 h-5" /></>
+                    )}
+                  </button>
                 </div>
-              )}
-
-              {/* Navigation */}
-              <motion.div className="flex gap-6 justify-center pt-16">
-                <motion.button 
-                  type="button"
-                  onClick={prevStep}
-                  disabled={currentStep === 0}
-                  className="px-12 py-6 btn-medical-secondary text-base font-bold shadow-2xl disabled:opacity-50 hover:shadow-ecg-glow"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <ChevronLeft className="w-5 h-5 inline mr-2" />
-                  Kembali
-                </motion.button>
-                <motion.button 
-                  type="button"
-                  onClick={currentStep === 6 ? handleSubmit(onSubmit) : nextStep}
-                  disabled={!isStepValid || loading}
-                  className={`px-16 py-6 text-base font-bold shadow-3xl rounded-2xl flex items-center gap-2 transition-all duration-500 uppercase tracking-wide ${
-                    !isStepValid || loading 
-                      ? 'bg-slate-800/50 cursor-not-allowed opacity-60' 
-                      : 'btn-primary hover:shadow-emerald-glow-xl hover:scale-[1.05] bg-gradient-to-r from-emerald-600 to-teal-600'
-                  }`}
-                  whileHover={!isStepValid || loading ? {} : { scale: 1.06 }}
-                  whileTap={!isStepValid || loading ? {} : { scale: 0.96 }}
-                >
-                  {loading ? (
-                    <div className="w-6 h-6 border-3 border-white/30 border-t-emerald-400 rounded-full animate-spin" />
-                  ) : currentStep === 6 ? (
-                    <>
-                      <HeartPulse className="w-5 h-5 animate-pulse" />
-                      Hasil 3D
-                    </>
-                  ) : (
-                    'Lanjut'
-                  )}
-                </motion.button>
               </motion.div>
-            </motion.div>
-          </AnimatePresence>
-        ) : (
-          <div className="relative z-10">
+            </AnimatePresence>
+          ) : (
             <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="glass-card p-12 rounded-2xl shadow-3xl max-w-4xl mx-auto"
+              className="bg-slate-900/60 backdrop-blur-xl p-8 lg:p-10 rounded-3xl border border-emerald-500/30 shadow-[0_0_40px_rgba(16,185,129,0.1)] relative z-10"
             >
-              <div className="text-center mb-12">
-                <h2 className="text-5xl font-black text-emerald-400 mb-8 drop-shadow-2xl">{result.risk}</h2>
-                <div className="w-full h-screen max-h-[70vh] rounded-2xl border-4 border-emerald-500/30 shadow-2xl mb-12 overflow-hidden relative">
-                  <ResultAnimation result={result} />
+              <div className="text-center mb-8">
+                <h2 className="text-4xl lg:text-5xl font-black bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-lg mb-2">
+                  {result.risk}
+                </h2>
+                <p className="text-slate-400 font-mono text-sm uppercase tracking-widest">Tingkat Risiko Prediksi</p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                <div className="p-6 rounded-2xl bg-emerald-950/40 border border-emerald-500/20 text-center relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-emerald-500/10 w-0 group-hover:w-full transition-all duration-500" />
+                  <span className="block text-4xl font-black text-emerald-400 mb-1 relative z-10">{Math.round(result.probability.low * 100)}%</span>
+                  <span className="font-mono text-[10px] text-emerald-500 uppercase tracking-widest relative z-10">Probabilitas Rendah</span>
+                </div>
+                <div className="p-6 rounded-2xl bg-red-950/40 border border-red-500/20 text-center relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-red-500/10 w-0 group-hover:w-full transition-all duration-500" />
+                  <span className="block text-4xl font-black text-red-400 mb-1 relative z-10">{Math.round(result.probability.high * 100)}%</span>
+                  <span className="font-mono text-[10px] text-red-500 uppercase tracking-widest relative z-10">Probabilitas Tinggi</span>
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <div className="p-8 rounded-2xl bg-emerald-500/30 border-4 border-emerald-400 shadow-emerald-glow">
-                  <span className="text-4xl font-black text-emerald-200">{Math.round(result.probability.low * 100)}%</span>
-                  <p className="font-mono uppercase text-emerald-100 mt-2">Risiko Rendah</p>
-                </div>
-                <div className="p-8 rounded-2xl bg-red-500/30 border-4 border-red-400 shadow-red-glow md:col-span-1">
-                  <span className="text-4xl font-black text-red-200">{Math.round(result.probability.high * 100)}%</span>
-                  <p className="font-mono uppercase text-red-100 mt-2">Risiko Tinggi</p>
-                </div>
-                <div className="p-8 rounded-2xl bg-teal-500/30 border-4 border-teal-400 shadow-teal-glow">
-                  <span className="text-4xl font-black text-teal-200">{result.risk}</span>
-                  <p className="font-mono uppercase text-teal-100 mt-2">Kesimpulan</p>
-                </div>
+              
+              <div className="p-6 bg-slate-950/50 rounded-2xl border-l-2 border-emerald-500 mb-8">
+                <h3 className="text-emerald-400 font-bold mb-2 flex items-center gap-2 text-sm uppercase tracking-wider">
+                  <Stethoscope className="w-4 h-4" /> Saran Medis
+                </h3>
+                <p className="text-slate-300 leading-relaxed text-sm lg:text-base">{result.advice}</p>
               </div>
-              <div className="p-8 bg-black/50 backdrop-blur border border-emerald-400/50 rounded-2xl mb-12">
-                <p className="text-xl font-semibold text-white text-center">{result.advice}</p>
-              </div>
-              <motion.button
+              
+              <button
                 onClick={() => {
                   setResult(null);
                   setCurrentStep(0);
                   reset();
                 }}
-                className="w-full btn-primary py-8 px-16 text-xl rounded-2xl"
-                whileHover={{ scale: 1.05 }}
+                className="w-full py-4 rounded-xl font-bold uppercase tracking-[0.2em] text-sm bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
               >
-                Prediksi Lagi
-              </motion.button>
+                Mulai Scan Baru
+              </button>
             </motion.div>
-          </div>
-        )}
+          )}
 
-        {error && (
-          <motion.div 
-            className="glass-card p-12 mt-16 text-center rounded-2xl shadow-2xl"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <AlertCircle className="w-24 h-24 text-red-400 mx-auto mb-8 animate-pulse shadow-red-glow" />
-            <p className="text-2xl font-bold text-red-300 mb-8">{error}</p>
-            <motion.button 
-              onClick={() => setError(null)}
-              className="btn-medical-secondary px-16 py-8 text-lg"
-              whileHover={{ scale: 1.05 }}
-            >
-              Coba Lagi
-            </motion.button>
-          </motion.div>
-        )}
+          {error && (
+            <div className="mt-6 p-6 bg-red-950/40 border border-red-500/30 rounded-2xl text-center">
+              <AlertCircle className="w-10 h-10 text-red-400 mx-auto mb-3" />
+              <p className="text-red-200">{error}</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -128,7 +128,7 @@ export default function ResultAnimation({ result }) {
 
   return (
     <motion.div 
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center p-8 pointer-events-none"
+      className="fixed inset-0 z-0 flex flex-col items-center justify-center pointer-events-none"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
@@ -136,29 +136,6 @@ export default function ResultAnimation({ result }) {
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
       />
-      <div className="relative z-10 text-center pointer-events-auto space-y-6 backdrop-blur-xl">
-        <motion.div 
-          className={`text-6xl md:text-8xl font-black drop-shadow-2xl ${isHighRisk ? 'text-red-400/90' : 'text-green-400/90'}`}
-          animate={{ scale: [1, 1.1, 1], textShadow: ['0 0 20px currentColor', '0 0 40px currentColor', '0 0 20px currentColor'] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          {result?.risk}
-        </motion.div>
-        <motion.div 
-          className="text-2xl md:text-3xl font-bold bg-black/50 px-8 py-6 rounded-2xl backdrop-blur-xl border-2 border-white/20"
-          animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          Risiko: {Math.round(result?.probability?.low * 100 || 0)}% Low | {Math.round(result?.probability?.high * 100 || 0)}% High
-        </motion.div>
-        <motion.p 
-          className="text-xl md:text-2xl font-semibold bg-black/70 px-12 py-8 rounded-2xl backdrop-blur-xl border max-w-2xl mx-auto leading-relaxed"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          {result?.advice || 'Konsultasikan dengan dokter untuk hasil lebih akurat.'}
-        </motion.p>
-      </div>
     </motion.div>
   );
 }

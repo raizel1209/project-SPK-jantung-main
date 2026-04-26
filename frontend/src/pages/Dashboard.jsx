@@ -83,25 +83,19 @@ function Dashboard() {
         })}
       </motion.div>
 
-      {/* Interactive Heartbeat 3D - Medical red */}
+      {/* Interactive 2D Heartbeat Monitor */}
       <div className="text-center mb-24">
         <div className="max-w-2xl mx-auto">
           <div className="relative">
-            <div className="heart-3d w-80 h-80 mx-auto mb-12 rounded-3xl bg-gradient-to-br from-red-500/25 via-rose-500/15 to-red-400/10 border-4 border-emerald-400/30 backdrop-blur-xl p-12 shadow-3xl hover:shadow-red-glow">
+            <div className="w-64 h-64 mx-auto mb-12 rounded-full bg-slate-900/60 border border-emerald-500/30 backdrop-blur-xl p-12 flex items-center justify-center relative shadow-[0_0_50px_rgba(16,185,129,0.1)]">
+              <div className="absolute inset-0 rounded-full border-2 border-emerald-500/20 animate-ping" style={{ animationDuration: '2s' }}></div>
+              <div className="absolute inset-4 rounded-full border border-teal-500/30 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }}></div>
               <motion.div 
-                animate={{ 
-                  scale: [1, 1.3, 1.1, 1.4, 1],
-                  rotate: [0, 5, -5, 3, 0]
-                }}
-                transition={{ 
-                  duration: 2, 
-                  times: [0, 0.2, 0.4, 0.6, 1],
-                  repeat: Infinity,
-                  ease: 'easeInOut'
-                }}
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
                 className="w-full h-full flex items-center justify-center"
               >
-                <HeartPulse className="w-48 h-48 text-red-400 drop-shadow-3xl shadow-red-glow animate-heartbeat" />
+                <HeartPulse className="w-32 h-32 text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.8)]" />
               </motion.div>
             </div>
             <motion.h3 
@@ -109,10 +103,10 @@ function Dashboard() {
               animate={{ opacity: 1 }}
               className="text-4xl font-black bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 bg-clip-text text-transparent mb-4 tracking-tight shadow-heart-glow"
             >
-              Monitor Jantung Live
+              Monitor Denyut 2D
             </motion.h3>
             <p className="text-xl text-white/90 max-w-2xl mx-auto font-light tracking-wide">
-              Animasi 3D detak jantung medis dengan respons real-time
+              Visualisasi detak jantung interaktif dengan desain flat modern
             </p>
           </div>
         </div>

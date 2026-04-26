@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { HeartPulse, Zap, Heart } from 'lucide-react';
+import { HeartPulse, Zap, Activity, ShieldCheck } from 'lucide-react';
 
 function Home() {
   return (
@@ -77,14 +77,25 @@ function Home() {
         </motion.div>
       </div>
 
-      {/* Floating 3D Heart - Medical red */}
+      {/* Floating 2D Widgets */}
       <motion.div 
-        className="absolute right-16 top-1/4 w-64 h-64 opacity-30 lg:opacity-40"
-        animate={{ rotateY: 360, rotateX: 180 }}
-        transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+        className="absolute right-16 top-1/4 flex flex-col gap-6 opacity-40 lg:opacity-60"
+        animate={{ y: [-15, 15, -15] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <div className="heart-3d w-full h-full p-8">
-          <HeartPulse className="w-full h-full text-red-400 animate-pulse drop-shadow-2xl shadow-red-glow" style={{ filter: 'drop-shadow(0 0 25px rgba(239, 68, 68, 0.6))' }} />
+        <div className="bg-slate-900/50 backdrop-blur border border-emerald-500/30 p-6 rounded-2xl flex items-center gap-4 shadow-[0_0_30px_rgba(16,185,129,0.15)]">
+          <Activity className="w-10 h-10 text-emerald-400" />
+          <div>
+            <div className="h-2 w-16 bg-emerald-500/50 rounded-full mb-2"></div>
+            <div className="h-2 w-10 bg-emerald-500/30 rounded-full"></div>
+          </div>
+        </div>
+        <div className="bg-slate-900/50 backdrop-blur border border-blue-500/30 p-6 rounded-2xl flex items-center gap-4 shadow-[0_0_30px_rgba(59,130,246,0.15)] ml-8">
+          <ShieldCheck className="w-10 h-10 text-blue-400" />
+          <div>
+            <div className="h-2 w-16 bg-blue-500/50 rounded-full mb-2"></div>
+            <div className="h-2 w-10 bg-blue-500/30 rounded-full"></div>
+          </div>
         </div>
       </motion.div>
 
